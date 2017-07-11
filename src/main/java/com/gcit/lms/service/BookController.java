@@ -36,7 +36,7 @@ public class BookController {
 	GenreDAO gdao;
 	
 	@Transactional
-	@RequestMapping(value = "/books", method = RequestMethod.PUT, consumes="application/json")
+	@RequestMapping(value = "/api/books", method = RequestMethod.PUT, consumes="application/json")
 	public void saveBook(@RequestBody Book book) throws SQLException{
 		if(book.getBookId() != null){
 			bdao.updateBook(book);
@@ -45,7 +45,7 @@ public class BookController {
 		}
 	}
 	
-	@RequestMapping(value = "/books/withId", method = RequestMethod.POST, consumes="application/json", produces="application/json")
+	@RequestMapping(value = "/api/books/withId", method = RequestMethod.POST, consumes="application/json", produces="application/json")
 	public Integer saveBookWithId(@RequestBody Book book) throws SQLException{
 		return bdao.addBookWithId(book);
 	}
@@ -64,13 +64,13 @@ public class BookController {
 		return book;
 	}
 	
-	@RequestMapping(value = "/books/count", method = RequestMethod.GET, produces="application/json")
+	@RequestMapping(value = "/api/books/count", method = RequestMethod.GET, produces="application/json")
 	public Integer getBooksCount() throws SQLException {
 		return bdao.getBooksCount();
 	}
 	
-	@RequestMapping(value = "/books/{pageNo}/{searchString}", method = RequestMethod.GET, produces="application/json")
-	public List<Book> getAllBooks(@PathVariable Integer pageNo, @PathVariable String searchString) throws SQLException{
+	@RequestMapping(value = "/api/books/{pageNo}/{searchString}", method = RequestMethod.GET, produces="application/json")
+	public List<Book> getAllBooksFilter(@PathVariable Integer pageNo, @PathVariable String searchString) throws SQLException{
 		List<Book> books = bdao.readAllBooks(pageNo, searchString);
 		for (Book b:books){
 			b.setAuthors(adao.getAuthorsWithBook(b.getBookId()));
@@ -82,27 +82,40 @@ public class BookController {
 		return books;
 	}
 	
-	@RequestMapping(value = "/books/authors/", method = RequestMethod.POST, consumes="application/json")
+	@RequestMapping(value = "/api/books", method = RequestMethod.GET, produces="application/json")
+	public List<Book> getAllBooks() throws SQLException{
+		List<Book> books = bdao.readAllBooks(null, null);
+		for (Book b:books){
+			b.setAuthors(adao.getAuthorsWithBook(b.getBookId()));
+			if (pdao.getBookPublisher(b.getBookId()) != null){
+				b.setPublisher(pdao.getBookPublisher(b.getBookId()));
+			}
+			b.setGenres(gdao.getGenresWithBook(b.getBookId()));
+		}
+		return books;
+	}
+	
+	@RequestMapping(value = "/api/books/authors/", method = RequestMethod.POST, consumes="application/json")
 	public void setBookAuthor(@RequestBody Book book, @RequestBody Author author) throws SQLException{
 		bdao.addAuthorToBook(book, author);
 	}
 	
-	@RequestMapping(value = "/books/genres/", method = RequestMethod.POST, consumes="application/json")
+	@RequestMapping(value = "/api/books/genres/", method = RequestMethod.POST, consumes="application/json")
 	public void setBookGenre(@RequestBody Book book, @RequestBody Genre genre) throws SQLException{
 		bdao.addGenreToBook(book, genre);
 	}
 	
-	@RequestMapping(value = "/books/authors/", method = RequestMethod.DELETE, consumes="application/json")
+	@RequestMapping(value = "/api/books/authors/", method = RequestMethod.DELETE, consumes="application/json")
 	public void removeBookAuthor(@RequestBody Book book, @RequestBody Author author) throws SQLException{
 		bdao.deleteAuthorFromBook(book, author);
 	}
 	
-	@RequestMapping(value = "/books/genres/", method = RequestMethod.DELETE, consumes="application/json")
+	@RequestMapping(value = "/api/books/genres/", method = RequestMethod.DELETE, consumes="application/json")
 	public void removeBookGenre(@RequestBody Book book, @RequestBody Genre genre) throws SQLException{
 		bdao.deleteGenreFromBook(book, genre);
 	}
 	
-	@RequestMapping(value = "/books/authors/", method = RequestMethod.PUT, consumes="application/json")
+	@RequestMapping(value = "/api/books/authors/", method = RequestMethod.PUT, consumes="application/json")
 	public void editBookAuthors(@RequestBody Book book, @RequestBody ArrayList<Author> authors) throws SQLException{
 		List<Author> removeAuthors = new ArrayList<>(book.getAuthors());
 		removeAuthors.removeAll(authors);
@@ -119,7 +132,7 @@ public class BookController {
 	}
 
 	
-	@RequestMapping(value = "/book/genres/", method = RequestMethod.PUT, consumes="application/json")
+	@RequestMapping(value = "/api/book/genres/", method = RequestMethod.PUT, consumes="application/json")
 	public void editBookGenres(@RequestBody Book book, @RequestBody ArrayList<Genre> genres) throws SQLException {
 		List<Genre> removeGenres = new ArrayList<>(book.getGenres());
 		removeGenres.removeAll(genres);

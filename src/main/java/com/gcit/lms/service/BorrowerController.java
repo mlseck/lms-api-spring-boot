@@ -20,35 +20,38 @@ public class BorrowerController {
 
 	@Autowired
 	BorrowerDAO bodao;
-	
+
 	@Transactional
-	@RequestMapping(value = "/borrowers/", method = RequestMethod.PUT, consumes="application/json")
-	public void saveBorrower(@RequestBody Borrower borrower) throws SQLException{
-		if (borrower.getCardNo() != null){
-				bodao.updateBorrower(borrower);
-		} else{
-				bodao.addBorrower(borrower);
+	@RequestMapping(value = "/api/borrowers/", method = RequestMethod.PUT, consumes = "application/json")
+	public void saveBorrower(@RequestBody Borrower borrower)
+			throws SQLException {
+		if (borrower.getCardNo() != null) {
+			bodao.updateBorrower(borrower);
+		} else {
+			bodao.addBorrower(borrower);
 		}
 	}
-	
-	@RequestMapping(value = "/borrowers/", method = RequestMethod.DELETE, consumes="application/json")
-	public void deleteBorrower(Borrower borrower) throws SQLException{
+
+	@RequestMapping(value = "/api/borrowers/", method = RequestMethod.DELETE, consumes = "application/json")
+	public void deleteBorrower(Borrower borrower) throws SQLException {
 		bodao.deleteBorrower(borrower);
 	}
-	
-	@RequestMapping(value = "/borrowers/count", method = RequestMethod.GET, produces="application/json")
+
+	@RequestMapping(value = "/api/borrowers/count", method = RequestMethod.GET, produces = "application/json")
 	public Integer getBorrowersCount() throws SQLException {
 		return bodao.getBorrowersCount();
 	}
-	
-	@RequestMapping(value = "/borrowers/{cardNo}", method = RequestMethod.GET, produces="application/json")
-	public Borrower getBorrowerByPK(@PathVariable Integer cardNo) throws SQLException {
+
+	@RequestMapping(value = "/api/borrowers/{cardNo}", method = RequestMethod.GET, produces = "application/json")
+	public Borrower getBorrowerByPK(@PathVariable Integer cardNo)
+			throws SQLException {
 		Borrower borrower = bodao.getBorrowerByPK(cardNo);
 		return borrower;
 	}
-	
-	@RequestMapping(value = "/borrowers/{pageNo}/{searchString}", method = RequestMethod.GET, produces="application/json")
-	public List<Borrower> getAllBorrowers(@PathVariable Integer pageNo, @PathVariable String searchString) throws SQLException{
+
+	@RequestMapping(value = "/api/borrowers/{pageNo}/{searchString}", method = RequestMethod.GET, produces = "application/json")
+	public List<Borrower> getAllBorrowers(@PathVariable Integer pageNo,
+			@PathVariable String searchString) throws SQLException {
 		return bodao.readAllBorrowers(pageNo, searchString);
 	}
 }

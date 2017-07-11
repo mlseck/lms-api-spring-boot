@@ -23,7 +23,7 @@ public class GenreController {
 	GenreDAO gdao;
 	
 	@Transactional
-	@RequestMapping(value = "/genres/", method = RequestMethod.PUT, consumes="application/json")
+	@RequestMapping(value = "/api/genres/", method = RequestMethod.PUT, consumes="application/json")
 	public void saveGenre(Genre genre) throws SQLException{
 		if (genre.getGenreId() != null){
 				gdao.updateGenre(genre);
@@ -32,17 +32,17 @@ public class GenreController {
 		}
 	}
 	
-	@RequestMapping(value = "/genres/", method = RequestMethod.DELETE, consumes="application/json")
+	@RequestMapping(value = "/api/genres/", method = RequestMethod.DELETE, consumes="application/json")
 	public void deleteGenre(Genre genre) throws SQLException{
 		gdao.deleteGenre(genre);
 	}
 	
-	@RequestMapping(value = "/genres/count", method = RequestMethod.GET, produces="application/json")
+	@RequestMapping(value = "/api/genres/count", method = RequestMethod.GET, produces="application/json")
 	public Integer getGenresCount() throws SQLException {
 		return gdao.getGenresCount();
 	}
 	
-	@RequestMapping(value = "/genres/{genreId}", method = RequestMethod.GET, produces="application/json")
+	@RequestMapping(value = "/api/genres/{genreId}", method = RequestMethod.GET, produces="application/json")
 	public Genre getGenreByPK(@PathVariable Integer genreId) throws SQLException {
 		Genre genre = gdao.getGenreByPK(genreId);
 		genre.setBooks(bdao.getBooksWithGenre(genreId));
@@ -51,7 +51,7 @@ public class GenreController {
 	
 	
 	
-	@RequestMapping(value = "/genres/{pageNo}/{searchString}", method = RequestMethod.GET, produces="application/json")
+	@RequestMapping(value = "/api/genres/{pageNo}/{searchString}", method = RequestMethod.GET, produces="application/json")
 	public List<Genre> getAllGenres(@PathVariable Integer pageNo, @PathVariable String searchString) throws SQLException{
 		List<Genre> genres = gdao.readAllGenres(pageNo, searchString);
 		for (Genre g:genres){
