@@ -22,7 +22,7 @@ import com.gcit.lms.entity.Book;
 import com.gcit.lms.entity.Genre;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 
 public class BookController {
 
